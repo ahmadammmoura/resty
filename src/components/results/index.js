@@ -1,8 +1,10 @@
+import JSONPretty from 'react-json-pretty';
+import 'react-json-pretty/themes/monikai.css';
 function Results({data}){
   
     return (
       <section>
-        <pre>{data ? JSON.stringify(data, undefined, 2) : null}</pre>
+       <JSONPretty id="json-pretty" data={data}></JSONPretty>
       </section>
     );
   
