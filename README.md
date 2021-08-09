@@ -6,4 +6,4 @@
 
 [sandbox-link](https://codesandbox.io/s/dazzling-bhaskara-cytnp?file=/src/components/footer/index.js)
 
-[deploy-link]([sandbox-link](https://codesandbox.io/s/dazzling-bhaskara-cytnp?file=/src/components/footer/index.js))
+[deploy-link](https://resty-ahmad-amm.herokuapp.com/)
