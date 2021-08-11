@@ -5,7 +5,7 @@ function Form({handleApiCall}){
   const [URL, setURL] = useState('');
   const [method, setMethod] = useState('GET');
   const [textArea, setTextArea] = useState(false);
-  
+
 
 
   function handleSubmit (e){
