@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { useState,useEffect } from 'react';
 import './app.scss';
 
 // Let's talk about using index.js and some other name in the component folder
@@ -9,40 +9,48 @@ import Footer from './components/footer';
 import Form from './components/form';
 import Results from './components/results';
 
-class App extends React.Component {
+function App() {
+  const [data, setdata] = useState(null);
+  const [requestParams, setrequestParams] = useState({})
+  const [loading, setLoading] = useState(false);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: null,
-      requestParams: {},
-    };
-  }
-
-  callApi = (requestParams) => {
+  async function callApi(requestParams){
     // mock output
-    const data = {
-      count: 2,
-      results: [
-        {name: 'fake thing 1', url: 'http://fakethings.com/1'},
-        {name: 'fake thing 2', url: 'http://fakethings.com/2'},
-      ],
-    };
-    this.setState({data, requestParams});
+    try {
+      const raw = await fetch(requestParams.url);
+      const data = await raw.json();
+      
+      setdata(data)
+      setrequestParams(requestParams)
+      
+      setLoading(true)
+      setTimeout(()=>{
+        setLoading(false)
+      },3000)    
+    } catch (error) {
+      
+      setdata(null)
+    }
+
   }
 
-  render() {
+  useEffect(() => {
+    callApi(requestParams)
+  }, [requestParams])
+
+
+    
     return (
-      <React.Fragment>
+      <>
         <Header />
-        <div>Request Method: {this.state.requestParams.method}</div>
-        <div>URL: {this.state.requestParams.url}</div>
-        <Form handleApiCall={this.callApi} />
-        <Results data={this.state.data} />
+        <div>Request Method: {requestParams.method}</div>
+        <div>URL: {requestParams.url}</div>
+        <Form handleApiCall={callApi} />
+        <Results data={data} loading={loading} />
         <Footer />
-      </React.Fragment>
+      </>
     );
-  }
+  
 }
 
 export default App;
