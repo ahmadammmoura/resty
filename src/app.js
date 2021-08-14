@@ -1,18 +1,51 @@
 import React from 'react';
-import { useState,useEffect } from 'react';
+import { useState,useEffect,useReducer } from 'react';
 import './app.scss';
 
-// Let's talk about using index.js and some other name in the component folder
-// There's pros and cons for each way of doing this ...
+
 import Header from './components/header';
 import Footer from './components/footer';
 import Form from './components/form';
 import Results from './components/results';
+import History from './components/history';
+
+const initialState = {
+  requests: [],
+};
+
+let history;
+
+function historyReduser(state = initialState, action) {
+  const { type, payload } = action;
+  switch (type) {
+    case 'addSearch':
+      const requests = [...state.requests, payload];
+      history = requests;
+      return { requests };
+    default:
+      return state;
+  }
+}
+
+function addSearch(requestParams, data) {
+  return {
+    type: 'addSearch',
+    payload: {
+      url: requestParams.url,
+      method: requestParams.method,
+      result: data,
+    },
+  };
+}
+
 
 function App() {
   const [data, setdata] = useState(null);
   const [requestParams, setrequestParams] = useState({})
   const [loading, setLoading] = useState(false);
+  const [state, dispatch] = useReducer(historyReduser, initialState);
+
+
 
   async function callApi(requestParams){
     // mock output
@@ -26,9 +59,9 @@ function App() {
       setLoading(true)
       setTimeout(()=>{
         setLoading(false)
-      },3000)    
+      },3000)
+      dispatch(addSearch(requestParams, data));
     } catch (error) {
-      
       setdata(null)
     }
 
@@ -45,6 +78,7 @@ function App() {
         <Header />
         <div>Request Method: {requestParams.method}</div>
         <div>URL: {requestParams.url}</div>
+        <History handleApiCall={callApi} history={history} />
         <Form handleApiCall={callApi} />
         <Results data={data} loading={loading} />
         <Footer />
